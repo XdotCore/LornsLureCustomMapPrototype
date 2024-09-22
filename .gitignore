@@ -396,3 +396,12 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+## Ignore temp or generated Unity Files
+**/Temp/
+**/Logs/
+**/Library/
+**/UserSettings/
+CustomMapPrototypeUnity/**.csproj
+CustomMapPrototypeUnity/**.sln
