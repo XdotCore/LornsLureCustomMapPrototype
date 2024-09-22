@@ -397,6 +397,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+## Ignore user specific files
+**/gameinstall.target
 
 ## Ignore temp or generated Unity Files
 **/Temp/
