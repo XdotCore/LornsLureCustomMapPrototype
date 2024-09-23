@@ -2,11 +2,14 @@
 using UnityEngine.SceneManagement;
 
 public class Initializer : MonoBehaviour {
+    private const string SceneToCopy = "TheWallV3";
+    private const string ThisScene = "CustomMap1";
 
     private void Start() {
-        SceneManager.LoadSceneAsync("TheWallV3", LoadSceneMode.Additive).completed += aop => {
-            Scene c0 = SceneManager.GetSceneByName("TheWallV3");
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName("CustomMap1"));
+        SceneManager.LoadSceneAsync(SceneToCopy, LoadSceneMode.Additive).completed += aop => {
+            Scene c0 = SceneManager.GetSceneByName(SceneToCopy);
+            Scene customMap1 = SceneManager.GetSceneByName(ThisScene);
+            SceneManager.SetActiveScene(customMap1);
             GameObject[] roots = c0.GetRootGameObjects();
 
             foreach (GameObject root in roots) {
@@ -73,10 +76,14 @@ public class Initializer : MonoBehaviour {
                     case "ScreenshotCompanion":
                         break;
                     default:
-                        Destroy(root);
-                        break;
+                        // default don't move to custom scene
+                        continue;
                 }
+
+                SceneManager.MoveGameObjectToScene(root, customMap1);
             }
+
+            SceneManager.UnloadSceneAsync(SceneToCopy);
         };
     }
 }
