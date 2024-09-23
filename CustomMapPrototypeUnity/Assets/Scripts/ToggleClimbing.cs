@@ -5,7 +5,9 @@ public class ToggleClimbing : MonoBehaviour {
     public Material enabledMat;
     public Material disabledMat;
 
-#if !(UNITY_EDITOR || UNITY_STANDALONE) 
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
+    private const string saveName = "ClimbingAbility";
+
     private bool near = false;
     private bool hasInit = false;
     private bool on = false;
@@ -21,6 +23,9 @@ public class ToggleClimbing : MonoBehaviour {
 
         leftPickWalking = climber.GetComponent<HideUIToggle>().leftPickWalking.gameObject;
         rightPickWalking = climber.GetComponent<HideUIToggle>().rightPickWalking.gameObject;
+
+        on = PersistentSaveObject.upgradesObtained.Contains(saveName);
+        SetMaterial();
 
         hasInit = true;
     }
@@ -38,11 +43,11 @@ public class ToggleClimbing : MonoBehaviour {
             rightPickWalking.SetActive(on);
 
             if (on)
-                PersistentSaveObject.upgradesObtained.Add("ClimbingAbility");
+                PersistentSaveObject.upgradesObtained.Add(saveName);
             else
-                PersistentSaveObject.upgradesObtained.Remove("ClimbingAbility");
+                PersistentSaveObject.upgradesObtained.Remove(saveName);
 
-            cube.material = on ? enabledMat : disabledMat;
+            SetMaterial();
         }
     }
 
@@ -54,6 +59,10 @@ public class ToggleClimbing : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.name == "Climber")
             near = false;
+    }
+
+    private void SetMaterial() {
+        cube.material = on ? enabledMat : disabledMat;
     }
 #endif
 }

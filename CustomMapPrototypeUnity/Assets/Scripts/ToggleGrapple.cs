@@ -5,7 +5,9 @@ public class ToggleGrapple : MonoBehaviour {
     public Material enabledMat;
     public Material disabledMat;
 
-#if !(UNITY_EDITOR || UNITY_STANDALONE) 
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
+    private const string saveName = "Grapple";
+
     private bool near = false;
     private bool hasInit = false;
     private bool on = false;
@@ -20,6 +22,9 @@ public class ToggleGrapple : MonoBehaviour {
 
         grappleAttachmentRunning = climber.GetComponent<HideUIToggle>().leftPickWalking.transform.GetChild(0).gameObject;
 
+        on = PersistentSaveObject.upgradesObtained.Contains(saveName);
+        SetMaterial();
+
         hasInit = true;
     }
 
@@ -30,17 +35,17 @@ public class ToggleGrapple : MonoBehaviour {
         if (Input.GetButtonDown("Interact") && near) {
             on = !on;
 
-            climber.GetComponent<GrappleHook>().abilityActive = true;
+            climber.GetComponent<GrappleHook>().abilityActive = on;
             climber.GetComponent<GrappleHook>().StopGrapple();
 
             grappleAttachmentRunning.SetActive(on);
 
             if (on)
-                PersistentSaveObject.upgradesObtained.Add("Grapple");
+                PersistentSaveObject.upgradesObtained.Add(saveName);
             else
-                PersistentSaveObject.upgradesObtained.Remove("Grapple");
+                PersistentSaveObject.upgradesObtained.Remove(saveName);
 
-            cube.material = on ? enabledMat : disabledMat;
+            SetMaterial();
         }
     }
 
@@ -52,6 +57,10 @@ public class ToggleGrapple : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.name == "Climber")
             near = false;
+    }
+
+    private void SetMaterial() {
+        cube.material = on ? enabledMat : disabledMat;
     }
 #endif
 }

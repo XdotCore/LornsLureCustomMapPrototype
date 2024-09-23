@@ -5,7 +5,9 @@ public class ToggleDash : MonoBehaviour {
     public Material enabledMat;
     public Material disabledMat;
 
-#if !(UNITY_EDITOR || UNITY_STANDALONE) 
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
+    private const string saveName = "Dash";
+
     private bool near = false;
     private bool hasInit = false;
     private bool on = false;
@@ -16,6 +18,9 @@ public class ToggleDash : MonoBehaviour {
         climber = GameObject.Find("Climber");
         if (climber == null)
             return;
+
+        on = PersistentSaveObject.upgradesObtained.Contains(saveName);
+        SetMaterial();
 
         hasInit = true;
     }
@@ -31,11 +36,11 @@ public class ToggleDash : MonoBehaviour {
             climber.GetComponent<Dash>().abilityActive = on;
 
             if (on)
-                PersistentSaveObject.upgradesObtained.Add("Dash");
+                PersistentSaveObject.upgradesObtained.Add(saveName);
             else
-                PersistentSaveObject.upgradesObtained.Remove("Dash");
+                PersistentSaveObject.upgradesObtained.Remove(saveName);
 
-            cube.material = on ? enabledMat : disabledMat;
+            SetMaterial();
         }
     }
 
@@ -47,6 +52,10 @@ public class ToggleDash : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.name == "Climber")
             near = false;
+    }
+
+    private void SetMaterial() {
+        cube.material = on ? enabledMat : disabledMat;
     }
 #endif
 }

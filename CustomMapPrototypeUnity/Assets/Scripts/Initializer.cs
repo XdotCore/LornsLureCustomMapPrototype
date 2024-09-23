@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
 #if !(UNITY_EDITOR || UNITY_STANDALONE)
+using CustomMapPrototype;
 using UnityEngine.SceneManagement;
 #endif
 
@@ -15,12 +16,14 @@ public class Initializer : MonoBehaviour {
 
         Transform levelMechanics = transform.Find("LevelMechanics");
         Transform endingTrigger = levelMechanics.Find("EndingTrigger");
+        GameObject checkpoints = levelMechanics.Find("Checkpoints").gameObject;
 
-        SceneManager.LoadSceneAsync(SceneToCopy, LoadSceneMode.Additive).completed += aop => {
-            Scene c0 = SceneManager.GetSceneByName(SceneToCopy);
+        AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(SceneToCopy, LoadSceneMode.Additive);
+        loadSceneOp.completed += op => {
+            Scene copyScene = SceneManager.GetSceneByName(SceneToCopy);
             Scene customMap1 = SceneManager.GetSceneByName(ThisScene);
             SceneManager.SetActiveScene(customMap1);
-            GameObject[] roots = c0.GetRootGameObjects();
+            GameObject[] roots = copyScene.GetRootGameObjects();
 
             foreach (GameObject root in roots) {
                 switch (root.name) {
@@ -46,9 +49,6 @@ public class Initializer : MonoBehaviour {
                         for (int i = 0; i < root.transform.childCount; i++) {
                             GameObject child = root.transform.GetChild(i).gameObject;
                             switch (child.name) {
-                                case "NG+ Enable": {
-                                    Destroy(child);
-                                } break;
                                 case "EndingTrigger": {
                                     Animator blackoutAn = child.GetComponent<AnimateOnTrigger>().an;
                                     endingTrigger.GetComponent<AnimateOnTrigger>().an = blackoutAn;
@@ -62,24 +62,24 @@ public class Initializer : MonoBehaviour {
 
                                     Destroy(child);
                                 } break;
-                                case "EndCube": {
-                                    Destroy(child);
-                                } break;
-                                case "Deprecated Checkpoints": {
-                                    Destroy(child);
-                                } break;
                                 case "Checkpoints": {
-                                    foreach (Transform checkpoint in child.transform)
-                                        Destroy(checkpoint.gameObject);
+                                    foreach (Transform oldCheckpoint in child.transform)
+                                        Destroy(oldCheckpoint.gameObject);
+
+                                    while (checkpoints.transform.childCount > 0) {
+                                        Transform newCheckpoint = checkpoints.transform.GetChild(0);
+                                        newCheckpoint.SetParent(child.transform, true);
+                                    }
+
+                                    Destroy(checkpoints);
                                 } break;
-                                case "AllCutscenes": {
-                                    foreach (Transform cutscene in child.transform)
-                                        Destroy(cutscene);
-                                } break;
-                                case "SecretCrystals": {
-                                    foreach (Transform crystal in child.transform)
-                                        Destroy(crystal.gameObject);
-                                } break;
+                                case "NG+ Enable":
+                                case "EndCube":
+                                case "Deprecated Checkpoints":
+                                case "SecretCrystals":
+                                case "WayPointHints":
+                                    Destroy(child);
+                                    break;
                             }
                         }
 

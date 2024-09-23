@@ -5,7 +5,9 @@ public class ToggleHighJump : MonoBehaviour {
     public Material enabledMat;
     public Material disabledMat;
 
-#if !(UNITY_EDITOR || UNITY_STANDALONE) 
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
+    private const string saveName = "JumpForce";
+
     private bool near = false;
     private bool hasInit = false;
     private bool on = false;
@@ -53,6 +55,9 @@ public class ToggleHighJump : MonoBehaviour {
         grappleMaxLateralSpeedDefault = climber.GetComponent<GrappleHook>().maxLateralSpeed;
         grappleDefaultSpeedDefault    = climber.GetComponent<GrappleHook>().defaultSpeed;
 
+        on = PersistentSaveObject.upgradesObtained.Contains(saveName);
+        SetMaterial();
+
         hasInit = true;
     }
 
@@ -82,7 +87,7 @@ public class ToggleHighJump : MonoBehaviour {
                 climber.GetComponent<GrappleHook>().maxLateralSpeed = 20f;
                 climber.GetComponent<GrappleHook>().defaultSpeed = 15f;
 
-                PersistentSaveObject.upgradesObtained.Add("JumpForce");
+                PersistentSaveObject.upgradesObtained.Add(saveName);
             } else {
                 climber.GetComponent<ClimbingAbilityV2>().bfpsc.extraJumpTime = bfpscExtraJumpTimeDefault;
                 climber.GetComponent<ClimbingAbilityV2>().bfpsc.extraJumpPower = bfpscExtraJumpPowerDefault;
@@ -102,10 +107,10 @@ public class ToggleHighJump : MonoBehaviour {
                 climber.GetComponent<GrappleHook>().maxLateralSpeed = grappleMaxLateralSpeedDefault;
                 climber.GetComponent<GrappleHook>().defaultSpeed = grappleDefaultSpeedDefault;
 
-                PersistentSaveObject.upgradesObtained.Remove("JumpForce");
+                PersistentSaveObject.upgradesObtained.Remove(saveName);
             }
 
-            cube.material = on ? enabledMat : disabledMat;
+            SetMaterial();
         }
     }
 
@@ -117,6 +122,10 @@ public class ToggleHighJump : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.gameObject.name == "Climber")
             near = false;
+    }
+
+    private void SetMaterial() {
+        cube.material = on ? enabledMat : disabledMat;
     }
 #endif
 }
