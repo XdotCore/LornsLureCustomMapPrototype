@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MelonLoader;
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -43,7 +44,7 @@ namespace CustomMapPrototype {
         [HarmonyPatch(typeof(CollectibleMeta), "Start")]
         [HarmonyPostfix]
         private static void InitCollectibles() {
-            CollectibleMeta.maxCrystals[CustomMap1Id] = 0;
+            CollectibleMeta.maxCrystals[CustomMap1Id] = 1;
             CollectibleMeta.maxScans[CustomMap1Id] = 0;
             CollectibleMeta.noCrystalLevels.Add(CustomMap1Id);
         }

@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using System.Reflection;
+
 
 #if !(UNITY_EDITOR || UNITY_STANDALONE)
 using CustomMapPrototype;
@@ -17,6 +19,8 @@ public class Initializer : MonoBehaviour {
         Transform levelMechanics = transform.Find("LevelMechanics");
         Transform endingTrigger = levelMechanics.Find("EndingTrigger");
         GameObject checkpoints = levelMechanics.Find("Checkpoints").gameObject;
+        GameObject secretCrystals = levelMechanics.Find("SecretCrystalPlaceholders").gameObject;
+        GameObject wayPoints = levelMechanics.Find("WayPointPlaceholders").gameObject;
 
         AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(SceneToCopy, LoadSceneMode.Additive);
         loadSceneOp.completed += op => {
@@ -73,11 +77,55 @@ public class Initializer : MonoBehaviour {
 
                                     Destroy(checkpoints);
                                 } break;
+                                case "SecretCrystals": {
+                                    GameObject templateCrystal = child.transform.GetChild(0).gameObject;
+                                    templateCrystal.name = "Template Crystal";
+
+                                    bool skipFirst = true;
+                                    foreach (Transform oldCrystal in child.transform) {
+                                        if (skipFirst) {
+                                            skipFirst = false;
+                                            continue;
+                                        }
+                                        Destroy(oldCrystal.gameObject);
+                                    }
+
+                                    foreach (Transform crystal in secretCrystals.transform) {
+                                        Transform newCrystal = Instantiate(templateCrystal, child.transform).transform;
+                                        newCrystal.position = crystal.position;
+                                        newCrystal.gameObject.name = crystal.gameObject.name;
+                                        newCrystal.gameObject.SetActive(crystal.gameObject.activeSelf);
+                                    }
+
+                                    Destroy(templateCrystal);
+                                    Destroy(secretCrystals);
+                                } break;
+                                case "WayPointHints": {
+                                    GameObject templateWayPoint = child.transform.GetChild(0).gameObject;
+                                    templateWayPoint.name = "Template WayPoint";
+
+                                    bool skipFirst = true;
+                                    foreach (Transform oldWayPoint in child.transform) {
+                                        if (skipFirst) {
+                                            skipFirst = false;
+                                            continue;
+                                        }
+                                        Destroy(oldWayPoint.gameObject);
+                                    }
+
+                                    foreach (Transform wayPoint in wayPoints.transform) {
+                                        Transform newWayPoint = Instantiate(templateWayPoint, child.transform).transform;
+                                        newWayPoint.position = wayPoint.position;
+                                        newWayPoint.gameObject.name = wayPoint.gameObject.name;
+                                        newWayPoint.gameObject.SetActive(wayPoint.gameObject.activeSelf);
+                                    }
+
+                                    Destroy(templateWayPoint);
+                                    Destroy(wayPoints);
+                                } break;
                                 case "NG+ Enable":
                                 case "EndCube":
                                 case "Deprecated Checkpoints":
-                                case "SecretCrystals":
-                                case "WayPointHints":
                                     Destroy(child);
                                     break;
                             }
