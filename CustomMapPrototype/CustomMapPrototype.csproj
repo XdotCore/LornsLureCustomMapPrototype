@@ -117,6 +117,9 @@
     <EmbeddedResource Include="..\CustomMapPrototypeUnity\Assets\AssetBundles\custommap1">
       <Link>Unity\AssetBundles\custommap1</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\CustomMapPrototypeUnity\Assets\AssetBundles\custommap1assets">
+      <Link>Unity\AssetBundles\custommap1assets</Link>
+    </EmbeddedResource>
     <None Include="gameinstall.target" />
   </ItemGroup>
   <ItemGroup />

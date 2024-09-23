@@ -1,7 +1,10 @@
 ManifestFileVersion: 0
-CRC: 204697
+CRC: 3159604011
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
       Name: custommap1
+      Dependencies: {}
+    Info_1:
+      Name: custommap1assets
       Dependencies: {}

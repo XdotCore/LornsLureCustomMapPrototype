@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MelonLoader;
-using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -26,9 +25,12 @@ namespace CustomMapPrototype {
         public override void OnInitializeMelon() {
             Logger = LoggerInstance;
 
-            using (MemoryStream embeded = new MemoryStream()) {
-                Assembly.GetExecutingAssembly().GetManifestResourceStream("CustomMapPrototype.Unity.AssetBundles.custommap1").CopyTo(embeded);
-                CustomMap1Bundle = AssetBundle.LoadFromMemory(embeded.ToArray());
+            using (Stream sceneBundleStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CustomMapPrototype.Unity.AssetBundles.custommap1")) {
+                AssetBundle.LoadFromStream(sceneBundleStream);
+            }
+
+            using (Stream assetBundleStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("CustomMapPrototype.Unity.AssetBundles.custommap1assets")) {
+                CustomMap1Bundle = AssetBundle.LoadFromStream(assetBundleStream);
             }
         }
 
@@ -133,6 +135,11 @@ namespace CustomMapPrototype {
                             stats.DisplayLevelStats(CustomMap1Id);
                         });
                         hoverTrigger.triggers.Add(selectEntry);
+
+                        GameObject graphic = firstMap.transform.GetChild(0).gameObject;
+                        graphic.name = $"{CustomMap1Id}Graphic";
+
+                        graphic.GetComponent<Image>().sprite = CustomMap1Bundle.LoadAsset<Sprite>(CustomMap1Id);
                     }
                     break;
                     case "Levels Panel":
