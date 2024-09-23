@@ -1,11 +1,21 @@
 ﻿using UnityEngine;
+
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
 using UnityEngine.SceneManagement;
+#endif
 
 public class Initializer : MonoBehaviour {
+#if !(UNITY_EDITOR || UNITY_STANDALONE)
     private const string SceneToCopy = "TheWallV3";
     private const string ThisScene = "CustomMap1";
 
     private void Start() {
+        Transform climberStart = transform.Find("ClimberStart");
+        Transform cameraRotation = climberStart.Find("CameraRotation");
+
+        Transform levelMechanics = transform.Find("LevelMechanics");
+        Transform endingTrigger = levelMechanics.Find("EndingTrigger");
+
         SceneManager.LoadSceneAsync(SceneToCopy, LoadSceneMode.Additive).completed += aop => {
             Scene c0 = SceneManager.GetSceneByName(SceneToCopy);
             Scene customMap1 = SceneManager.GetSceneByName(ThisScene);
@@ -19,9 +29,17 @@ public class Initializer : MonoBehaviour {
                             GameObject child = root.transform.GetChild(i).gameObject;
                             switch (child.name) {
                                 case "Climber": {
-                                    child.transform.position = transform.position;
+                                    child.transform.position = climberStart.position;
+                                    child.transform.rotation = climberStart.rotation;
+                                    child.GetComponent<UIToggleControls>().walkingCam.transform.localRotation = cameraRotation.localRotation;
                                 } break;
                             }
+                        }
+                    } break;
+                    case "Map": {
+                        for (int i = 0; i < root.transform.childCount; i++) {
+                            GameObject child = root.transform.GetChild(i).gameObject;
+                            Destroy(child);
                         }
                     } break;
                     case "Level Mechanics": {
@@ -32,6 +50,16 @@ public class Initializer : MonoBehaviour {
                                     Destroy(child);
                                 } break;
                                 case "EndingTrigger": {
+                                    Animator blackoutAn = child.GetComponent<AnimateOnTrigger>().an;
+                                    endingTrigger.GetComponent<AnimateOnTrigger>().an = blackoutAn;
+
+                                    StatsScreenEnding sse = blackoutAn.GetComponent<StatsScreenEnding>();
+                                    sse.cutsceneNext = false;
+                                    sse.sceneAfterNext = null;
+                                    sse.nextScene = "Menu";
+                                    sse.CRNextScene = null;
+                                    sse.runModeNextScene = null;
+
                                     Destroy(child);
                                 } break;
                                 case "EndCube": {
@@ -53,6 +81,12 @@ public class Initializer : MonoBehaviour {
                                         Destroy(crystal.gameObject);
                                 } break;
                             }
+                        }
+
+                        // copy over custom level mechanics
+                        for (int i = 0; i < levelMechanics.childCount; i++) {
+                            Transform child = levelMechanics.GetChild(i);
+                            child.parent = root.transform;
                         }
                     } break;
                     case "Gameplay": {
@@ -86,4 +120,5 @@ public class Initializer : MonoBehaviour {
             SceneManager.UnloadSceneAsync(SceneToCopy);
         };
     }
+#endif
 }
