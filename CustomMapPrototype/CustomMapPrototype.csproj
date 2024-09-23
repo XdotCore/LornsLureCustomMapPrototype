@@ -32,8 +32,16 @@
   </PropertyGroup>
   <Import Project="gameinstall.target" />
   <ItemGroup>
+    <Reference Include="0Harmony, Version=2.10.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameInstallPath)\MelonLoader\net35\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameInstallPath)\LornsLure_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Games\steam\steamapps\common\Lorn's Lure\LornsLure_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>$(GameInstallPath)\MelonLoader\net35\MelonLoader.dll</HintPath>
@@ -50,13 +58,29 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameInstallPath)\LornsLure_Data\Managed\Unity.Localization.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(GameInstallPath)\LornsLure_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameInstallPath)\LornsLure_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Games\steam\steamapps\common\Lorn's Lure\LornsLure_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(GameInstallPath)\LornsLure_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Games\steam\steamapps\common\Lorn's Lure\LornsLure_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Games\steam\steamapps\common\Lorn's Lure\LornsLure_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,12 +88,34 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\Initializer.cs">
+      <Link>Unity\Scripts\Initializer.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\ToggleClimbing.cs">
+      <Link>Unity\Scripts\ToggleClimbing.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\ToggleDash.cs">
+      <Link>Unity\Scripts\ToggleDash.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\ToggleGrapple.cs">
+      <Link>Unity\Scripts\ToggleGrapple.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\ToggleHighJump.cs">
+      <Link>Unity\Scripts\ToggleHighJump.cs</Link>
+    </Compile>
+    <Compile Include="..\CustomMapPrototypeUnity\Assets\Scripts\ToggleTicTac.cs">
+      <Link>Unity\Scripts\ToggleTicTac.cs</Link>
+    </Compile>
     <Compile Include="Mod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\CustomMapPrototypeUnity\Assets\AssetBundles\custommap1">
+      <Link>Unity\AssetBundles\custommap1</Link>
+    </EmbeddedResource>
     <None Include="gameinstall.target" />
   </ItemGroup>
+  <ItemGroup />
   <Target Name="CopyToGameInstall" AfterTargets="AfterBuild">
     <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameInstallPath)/Mods" />
     <Message Text="Copied to Game Install" Importance="High" />
