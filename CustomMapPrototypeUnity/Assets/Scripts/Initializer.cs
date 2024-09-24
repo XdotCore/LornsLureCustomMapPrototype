@@ -67,12 +67,28 @@ public class Initializer : MonoBehaviour {
                                     Destroy(child);
                                 } break;
                                 case "Checkpoints": {
-                                    foreach (Transform oldCheckpoint in child.transform)
+                                    Transform first = null;
+                                    bool isFirst = true;
+                                    foreach (Transform oldCheckpoint in child.transform) {
+                                        if (isFirst) {
+                                            first = oldCheckpoint;
+                                            isFirst = false;
+                                            continue;
+                                        }
                                         Destroy(oldCheckpoint.gameObject);
+                                    }
 
+                                    isFirst = true;
                                     while (checkpoints.transform.childCount > 0) {
                                         Transform newCheckpoint = checkpoints.transform.GetChild(0);
-                                        newCheckpoint.SetParent(child.transform, true);
+
+                                        if (isFirst) {
+                                            first.position = newCheckpoint.position;
+                                            first.rotation = newCheckpoint.rotation;
+                                            Destroy(newCheckpoint.gameObject);
+                                            isFirst = false;
+                                        } else
+                                            newCheckpoint.SetParent(child.transform, true);
                                     }
 
                                     Destroy(checkpoints);
